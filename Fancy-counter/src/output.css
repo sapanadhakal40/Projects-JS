@@ -1,4 +1,8 @@
 /*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+
+.counter--limit {
+ border: 2px solid red;
+}
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
