@@ -120,7 +120,51 @@ counterElement.textContent = MAX_NUM_CHAR; // Reset the counter to
 
 formElement.addEventListener("submit", submitHandler);
 
+
 //FEEDBACK LIST COMPONENT
+
+const clickHandler = (event) => {
+    // console.log('event');
+    //get clicked HTML element
+    
+    const clickedElement = event.target;
+    // console.log(clickedElement);
+
+    //determine if user intended to upvote or expand
+    const upvoteIntention = clickedElement.className.includes("upvote");
+    if (upvoteIntention) {
+        //get closest upvote button
+        const upvoteButtonElement = clickedElement.closest(".upvote");
+
+        //disable upvote button(prevent multiple clicks)
+        upvoteButtonElement.disabled = true;
+        
+        //select upvote count element
+        const upvoteCountElement = upvoteButtonElement.querySelector(".upvote__count");
+
+        let upvoteCount = +upvoteCountElement.textContent; // Convert the text content to a number
+
+        upvoteCountElement.textContent = ++upvoteCount;
+
+        //increment by 1
+        // upvoteCount = upvoteCount + 1;
+
+        // //set upvote count to new value
+        // upvoteCountElement.textContent = upvoteCount;
+
+        // //get current display upvote count as number
+        // const upvoteCount = upvoteCountElement.textContent;
+        // console.log(typeof upvoteCount);
+
+
+    }else {
+        //expand clicked feedback item
+    clickedElement.closest(".feedback").classList.toggle("feedback--expanded");
+    }
+};
+feedbackListElement.addEventListener("click", clickHandler);
+
+
 fetch(`${BASE_API_URL}/feedbacks`)
     .then(response => response.json())
     .then(data => {
