@@ -1,13 +1,13 @@
 //Global
 const MAX_NUM_CHAR = 150; // Maximum number of characters allowed in the textarea
-
+const BASE_API_URL = 'https://bytegrad.com/course-assets/js/1/api'; 
 //counter
 const textareaElement = document.querySelector(".form__textarea");
 const formElement = document.querySelector(".form");
 const counterElement = document.querySelector(".counter");
 const feedbackListElement = document.querySelector(".feedbacks");
 const submitBtnElement = document.querySelector(".submit-btn");
-const spinnerElement = document.querySelector(".spinner");
+const spinnerElement = document.querySelector('.spinner');
 
 const renderFeedbackItem = feedbackItem => {
     const feedbackItemHTML = `
@@ -23,7 +23,7 @@ const renderFeedbackItem = feedbackItem => {
         <p class="feedback__company">${feedbackItem.company}</p>
         <p class="feedback__text">${feedbackItem.text}</p>
     </div>
-    <p class="feedback__date">${feedbackItem.daysLeft === 0 ? 'NEW' : `${feedbackItem.daysLeft}d`}</p>
+    <p class="feedback__date">${feedbackItem.daysAgo === 0 ? 'NEW' : `${feedbackItem.daysAgo}d`}</p>
 </li>
 `;
 
@@ -79,20 +79,35 @@ const hashtag = text.split(' ').find(word => word.includes("#"));
 const company = hashtag.substring(1); // Remove the '#' character from the hashtag
 const badgeLetter = company.substring(0, 1).toUpperCase(); // Get the first letter of the company name and convert it to uppercase
 const upvoteCount = 0;
-const daysLeft = 0;
+const daysAgo = 0;
 
 //create a new feedback item object
 const feedbackItem = {
     upvoteCount: upvoteCount,
     company: company,
     badgeLetter: badgeLetter,
-    daysLeft: daysLeft,
+    daysAgo: daysAgo,
     text: text
 };
 
 renderFeedbackItem(feedbackItem); // Render the new feedback item in the list
 
-
+// Send the feedback item to the server
+fetch(`${BASE_API_URL}/feedbacks`, {
+    method: 'POST',
+    body: JSON.stringify(feedbackItem),
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+    }
+    // Convert the feedback item object to a JSON string
+}).then(response => {
+    if (!response.ok) {
+      console.log('something went wrong');
+      return;
+    }
+    console.log('Feedback item submitted successfully!');
+}).catch(error => console.log(error));
 // Clear the textarea after submission
 textareaElement.value = ""; 
 
@@ -106,13 +121,11 @@ counterElement.textContent = MAX_NUM_CHAR; // Reset the counter to
 formElement.addEventListener("submit", submitHandler);
 
 //FEEDBACK LIST COMPONENT
-fetch('https://bytegrad.com/course-assets/js/1/api/feedbacks')
+fetch(`${BASE_API_URL}/feedbacks`)
     .then(response => response.json())
     .then(data => {
-        // remove spinner
-        spinnerEl.remove();
-
-        // iterate over each element in feedbacks array and render it in list
+     
+// iterate over each element in feedbacks array and render it in list
         data.feedbacks.forEach(feedbackItem => renderFeedbackItem(feedbackItem));
     })
     .catch(error => {
