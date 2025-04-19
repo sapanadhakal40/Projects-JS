@@ -8,6 +8,7 @@ const counterElement = document.querySelector(".counter");
 const feedbackListElement = document.querySelector(".feedbacks");
 const submitBtnElement = document.querySelector(".submit-btn");
 const spinnerElement = document.querySelector('.spinner');
+const hashtagListElement = document.querySelector(".hashtags");
 
 const renderFeedbackItem = feedbackItem => {
     const feedbackItemHTML = `
@@ -175,3 +176,34 @@ fetch(`${BASE_API_URL}/feedbacks`)
     .catch(error => {
         feedbackListElement.textContent = `Failed to fetch feedback items. Error message: ${error.message}`;
     });
+
+    //HASH TAGS COMPONENT
+    const clickHandler2 = event => {
+        //get clicked HTML element
+        const clickedElement = event.target;
+        
+        //stop function execution if clicked element is not a hashtag
+        if (clickedElement.className === "hashtags") return;
+
+        const companyNameFromHashtag = clickedElement.textContent.substring(1).toLowerCase().trim(); // Remove the '#' character from the hashtag
+
+        //iterate over each feedback item in the list
+        feedbackListElement.childNodes.forEach(childNode => {
+            //stop this iteration if its a childNode 
+            if (childNode.nodeType === 3) return;
+
+        //extract company name from feedback item
+        const companyNameFromFeedbackItem = childNode.querySelector(".feedback__company").textContent.toLowerCase().trim();
+
+        //remove feedback item from list if company names do not match
+        if (companyNameFromHashtag !== companyNameFromFeedbackItem) {
+            childNode.remove(); // Remove the feedback item from the list .for eg: if nike is not equal to macdonald then macdonalds feedback item will be removed from the list
+        }
+        });
+
+
+        // console.log(clickedElement);
+    };
+        
+    hashtagListElement.addEventListener("click", 
+clickHandler2);
