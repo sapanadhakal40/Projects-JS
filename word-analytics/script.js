@@ -8,16 +8,15 @@ function inputhandler() {
 
         // console.log(textareaElement.value.length);
         //input validation
-        if (textareaElement.value.includes("  ")) {
-            alert("You can't use that.");
-            textareaElement.value = textareaElement.value.replace("  ", '');
+      const text = textareaElement.value;
+      const numberofchars = text.length;
+
+      let numberofwords = 0;
+      const trimText = text.trim();
+        if (trimText !== "") {
+            numberofwords = trimText.split(/\s+/).length; // Split by whitespace and count words
         }
         
-        let numberofwords = textareaElement.value.split(' ').length;
-        if (textareaElement.value.length === 0) {
-            numberofwords = 0;
-        }
-        const numberofchars = textareaElement.value.length;
         const twitterCharsLeft = 280 - numberofchars;
         const facebookCharsLeft = 2200 - numberofchars;
         
